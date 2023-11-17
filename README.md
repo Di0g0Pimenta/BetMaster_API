@@ -94,6 +94,78 @@ Nenhum.
 ]
 ```
 
+**Método:** `Post`
+
+Cria um jogos.
+
+#### Parâmetros da Solicitação
+- `name` (string): Nome do jogo.
+- `dateTime` (date): Data e hora do jogo.
+- `teamA` (string): Nome da primeira equipa.
+- `teamB` (string): Nome da segunda equipa.
+
+#### Resposta de Sucesso
+- **Status:** 200 OK
+
+```json
+[
+  {
+    "name": "Nome do Jogo",
+    "dateTime": "Data e hora do jogo",
+    "teamA": "Nome do Time A",
+    "teamB": "Nome do Time B"
+  },
+]
+```
+
+**Método:** `Put`
+
+Atualiza os dados de un jogo um jogos.
+
+#### Parâmetros da Solicitação
+- `name` (string): Nome do jogo.
+- `dateTime` (date): Data e hora do jogo.
+- `teamA` (string): Nome da primeira equipa.
+- `teamB` (string): Nome da segunda equipa.
+
+#### Resposta de Sucesso
+- **Status:** 200 OK
+
+```json
+[
+  {
+    "name": "Nome do Jogo",
+    "dateTime": "Data e hora do jogo",
+    "teamA": "Nome do Time A",
+    "teamB": "Nome do Time B"
+  },
+]
+```
+
+**Método:** `Delete`
+
+Elimina um jogo da lista de jogos.
+
+#### Parâmetros da Solicitação
+- `name` (string): Nome do jogo.
+- `dateTime` (date): Data e hora do jogo.
+- `teamA` (string): Nome da primeira equipa.
+- `teamB` (string): Nome da segunda equipa.
+
+#### Resposta de Sucesso
+- **Status:** 200 OK
+
+```json
+[
+  {
+    "name": "Nome do Jogo",
+    "dateTime": "Data e hora do jogo",
+    "teamA": "Nome do Time A",
+    "teamB": "Nome do Time B"
+  },
+]
+```
+
 ### Odds - Lista de Odds
 
 **Endpoint:** `/api/odds`

@@ -3,21 +3,40 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
+const UserBalance = require('../models/userBalance');
+
 
 router.post('/register', async (req, res) => {
   try {
     const { username, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10); 
 
+    // Verifique se o nome de usuário já está em uso
+    const existingUser = await User.findOne({ username });
+    if (existingUser) {
+      return res.status(400).json({ error: 'Nome de usuário já em uso.' });
+    }
+
+    // Crie uma nova instância do modelo User
     const newUser = new User({
-      username: username,
-      password: hashedPassword,
-      // outras informações do usuário, se necessário
+      username,
+      password,
     });
 
+    // Salve o novo usuário no banco de dados
     await newUser.save();
+
+    // Crie uma instância do modelo UserBalance para o novo usuário
+    const newUserBalance = new UserBalance({
+      userId: newUser._id,
+      balance: 0, // Defina o saldo inicial como necessário
+    });
+
+    // Salve o novo saldo do usuário no banco de dados
+    await newUserBalance.save();
+
     res.status(201).json({ message: 'Usuário registrado com sucesso.' });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: 'Erro ao registrar o usuário.' });
   }
 });
