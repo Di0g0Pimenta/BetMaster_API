@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const Bet = require("../models/bet");
+const Game = require("../models/game");
+const Odd = require("../models/odd");
+const UserBalance = require("../models/userBalance");
 
 router.post("/", async (req, res) => {
   try {
@@ -48,6 +51,5 @@ router.post("/", async (req, res) => {
     res.status(500).json({ error: "Erro ao criar a aposta." });
   }
 });
-
 
 module.exports = router;

@@ -4,8 +4,17 @@ const Game = require('../models/game');
 
 router.get('/', async (req, res) => {
   try {
-    const games = await Game.find({}, '-_id name dateTime teamA teamB');
-    res.status(200).json(games);
+    const games = await Game.find({}, '_id name dateTime teamA teamB');
+
+    const formattedGames = games.map((game) => ({
+      gameId: game._id.toString(), // Convertendo o ID para string
+      name: game.name,
+      dateTime: game.dateTime,
+      teamA: game.teamA,
+      teamB: game.teamB,
+    }));
+
+    res.status(200).json(formattedGames);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Erro ao obter a lista de jogos.' });

@@ -175,7 +175,36 @@ Elimina um jogo da lista de jogos.
 Obtém a lista de todas as odds disponíveis.
 
 #### Parâmetros da Solicitação
-Nenhum.
+
+- `gameId` (string): ID do jogo.
+- `teamAOdd` (int): Odd da equipa A.
+- `teamBOdd` (int): Odd da equipa B.
+- `drawOdd` (int): Odd empate.
+
+#### Resposta de Sucesso
+- **Status:** 200 OK
+
+```json
+[
+  {
+    "gameId": "ID do Jogo",
+    "teamAOdd": 2.5,
+    "teamBOdd": 1.8,
+    "drawOdd": 3.0
+  },
+]
+```
+
+**Método:** `POST`
+
+Obtém a lista de todas as odds disponíveis.
+
+#### Parâmetros da Solicitação
+
+- `gameId` (string): ID do jogo.
+- `teamAOdd` (int): Odd da equipa A.
+- `teamBOdd` (int): Odd da equipa B.
+- `drawOdd` (int): Odd empate.
 
 #### Resposta de Sucesso
 - **Status:** 200 OK
