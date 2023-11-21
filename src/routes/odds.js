@@ -8,12 +8,15 @@ const Game = require('../models/game');
 router.get('/', async (req, res) => {
   try {
     const odds = await Odd.find({}, 'gameId teamAOdd teamBOdd drawOdd');
+
     const formattedOdds = odds.map((odd) => ({
+      oddId: odd._id.toString(),
       gameId: odd.gameId,
       teamAOdd: odd.teamAOdd,
       teamBOdd: odd.teamBOdd,
       drawOdd: odd.drawOdd,
     }));
+
     res.status(200).json(formattedOdds);
   } catch (error) {
     console.error(error);
