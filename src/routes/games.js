@@ -7,7 +7,7 @@ router.get('/', async (req, res) => {
     const games = await Game.find({}, '_id name dateTime teamA teamB');
 
     const formattedGames = games.map((game) => ({
-      gameId: game._id.toString(), // Convertendo o ID para string
+      gameId: game._id.toString(),
       name: game.name,
       dateTime: game.dateTime,
       teamA: game.teamA,

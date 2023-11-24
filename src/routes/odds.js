@@ -53,7 +53,6 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Rota para atualizar uma odd existente
 router.put('/:id', async (req, res) => {
   try {
     const oddId = req.params.id;

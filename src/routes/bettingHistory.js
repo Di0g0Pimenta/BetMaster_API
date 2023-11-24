@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const BettingHistory = require('../models/bettingHistory');
 const Bet = require('../models/bet');
-
+/*
 // Endpoint para obter o histórico de apostas de um usuário específico
 router.get('/', async (req, res) => {
   try {
@@ -44,5 +44,5 @@ router.get('/:historyId', async (req, res) => {
 });
 
 // Outras operações como atualizar ou excluir histórico de apostas podem ser adicionadas conforme necessário
-
+*/
 module.exports = router;
