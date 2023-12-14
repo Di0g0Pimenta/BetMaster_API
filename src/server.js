@@ -16,7 +16,7 @@ app.use('/api/users',authenticateToken, require('./routes/users'));
 app.use('/api/odds', require('./routes/odds'));
 app.use('/api/games', require('./routes/games'));
 app.use('/api/bets',authenticateToken ,require('./routes/bets'));
-app.use('/api/bettingHistory', require('./routes/bettingHistory'));
+app.use('/api/bettingHistory',authenticateToken , require('./routes/bettingHistory'));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

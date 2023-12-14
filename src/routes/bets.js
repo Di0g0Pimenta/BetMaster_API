@@ -103,8 +103,12 @@ router.post("/", async (req, res) => {
     await verifyOddExists(oddId);
     await verifyUserBalance(req.user.userId, betAmount);
 
-    const userId =
-      req.user && req.user.userId ? req.user.userId.toString() : null;
+    // Subtrair o valor da aposta do saldo do usuário
+    const user = await User.findById(req.user.userId);
+    const updatedBalance = user.balance - betAmount;
+    await User.findByIdAndUpdate(req.user.userId, { balance: updatedBalance });
+
+    const userId = req.user.userId.toString();
     console.log("UserID ao criar aposta:", userId);
 
     if (!userId) {
@@ -140,26 +144,75 @@ router.post("/", async (req, res) => {
       return res.status(500).json({ message: "Erro ao criar a aposta." });
     }
 
-    const user = await User.findById(userId);
+    const updatedUser = await User.findById(userId);
 
-    console.log("User encontrado após a busca:", user);
+    console.log("User encontrado após a busca:", updatedUser);
 
-    if (!user || user.balance === undefined) {
+    if (!updatedUser || updatedUser.balance === undefined) {
       console.log("Usuário não encontrado ou saldo não definido.");
       throw new Error("Erro ao obter informações do usuário.");
     }
 
-    const userBalance = user.balance;
-    const updatedBalance = userBalance - betAmount;
-
-    await User.findByIdAndUpdate(req.userId, { balance: updatedBalance });
-
     res.status(201).json({
       message: "Aposta criada com sucesso.",
       betId: newBetAfterSave._id ? newBetAfterSave._id.toString() : null,
+      updatedBalance: updatedUser.balance,
     });
   } catch (error) {
     handleError(res, 500, `Erro ao criar a aposta: ${error}`);
+  }
+});
+
+router.put("/:id/result", async (req, res) => {
+  try {
+    console.log("Received request to update bet result:", req.params.id, req.body);
+
+
+    const betId = req.params.id;
+    const { result } = req.body;
+
+    if (!result) {
+      console.log("Error: A propriedade 'result' é necessária.");
+      return res.status(400).json({ error: "A propriedade 'result' é necessária." });
+    }
+
+    const bet = await Bet.findByIdAndUpdate(betId, { result }, { new: true });
+
+    if (!bet) {
+      return res.status(404).json({ error: "Aposta não encontrada." });
+    }
+
+    // Lógica para calcular o valor ganho (wonAmount) com base na odd e no resultado
+    const odd = await Odd.findById(bet.oddId);
+
+    if (!odd) {
+      return res.status(404).json({ error: "Odd não encontrada." });
+    }
+
+    let wonAmount = 0;
+
+    if (result === "won") {
+      if (bet.betType === "teamA") {
+        wonAmount = bet.betAmount * odd.teamAOdd;
+      } else if (bet.betType === "teamB") {
+        wonAmount = bet.betAmount * odd.teamBOdd;
+      } else if (bet.betType === "draw") {
+        wonAmount = bet.betAmount * odd.drawOdd;
+      }
+    }
+
+    // Atualiza o campo wonAmount da aposta
+    await Bet.findByIdAndUpdate(betId, { wonAmount });
+
+    // Atualiza o saldo do usuário com base nos ganhos ou perdas
+    const user = await User.findById(bet.userId);
+    const updatedBalance = user.balance + wonAmount - bet.betAmount;
+    await User.findByIdAndUpdate(bet.userId, { balance: updatedBalance });
+
+    res.status(200).json({ message: "Resultado da aposta atualizado com sucesso." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erro ao atualizar o resultado da aposta." });
   }
 });
 

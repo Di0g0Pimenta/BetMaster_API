@@ -1,48 +1,54 @@
+/**
 const express = require('express');
 const router = express.Router();
+const authenticateToken = require('../Middlewares/authMiddleware');
 const BettingHistory = require('../models/bettingHistory');
-const Bet = require('../models/bet');
-/*
-// Endpoint para obter o histórico de apostas de um usuário específico
-router.get('/', async (req, res) => {
+
+router.get('/', authenticateToken, async (req, res) => {
   try {
-    const userId = req.user._id; // Obtém o ID do usuário autenticado
+    const userId = req.user.userId;
 
-    // Encontre todas as apostas do usuário
-    const userBets = await Bet.find({ userId });
+    console.log('UserID:', userId);
 
-    // Crie uma lista de IDs de apostas do usuário
-    const betIds = userBets.map((bet) => bet._id);
+    const bettingHistory = await BettingHistory.find({ userId });
 
-    // Encontre o histórico de apostas com base nas IDs de apostas
-    const bettingHistory = await BettingHistory.find({ betId: { $in: betIds } });
+    console.log('Betting History Query Result:', bettingHistory);
 
-    res.json(bettingHistory);
+    const formattedHistory = bettingHistory.map((entry) => ({
+      historyId: entry._id.toString(),
+      betId: entry.betId,
+      result: entry.status,
+      wonAmount: entry.wonAmount,
+      dateTime: entry.dateTime,
+    }));
+
+    res.status(200).json(formattedHistory);
   } catch (error) {
-    console.error(error);
+    console.error('Erro ao obter o histórico de apostas:', error);
     res.status(500).json({ error: 'Erro ao obter o histórico de apostas.' });
   }
 });
 
-// Endpoint para obter detalhes de um histórico de aposta específico
-router.get('/:historyId', async (req, res) => {
+router.post('/', authenticateToken, async (req, res) => {
   try {
-    const historyId = req.params.historyId;
+    const { betId, result, wonAmount } = req.body;
+    const userId = req.user.userId;
 
-    // Encontre o histórico de aposta pelo ID
-    const bettingHistory = await BettingHistory.findById(historyId);
+    const newHistoryEntry = new BettingHistory({
+      betId,
+      result,
+      wonAmount,
+      dateTime: new Date(),
+    });
 
-    if (!bettingHistory) {
-      return res.status(404).json({ error: 'Histórico de aposta não encontrado.' });
-    }
+    await newHistoryEntry.save();
 
-    res.json(bettingHistory);
+    res.status(201).json({ message: 'Histórico de apostas atualizado com sucesso.' });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Erro ao obter detalhes do histórico de aposta.' });
+    console.error('Erro ao adicionar a entrada no histórico de apostas:', error);
+    res.status(500).json({ error: 'Erro ao adicionar a entrada no histórico de apostas.' });
   }
 });
 
-// Outras operações como atualizar ou excluir histórico de apostas podem ser adicionadas conforme necessário
-*/
 module.exports = router;
+ */

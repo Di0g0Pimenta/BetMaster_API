@@ -8,6 +8,9 @@ const betSchema = new mongoose.Schema({
   betType: { type: String, required: true }, // 'teamA', 'teamB', 'draw'
   status: { type: String, required: true }, // 'pending', 'won', 'lost'
   dateTime: { type: Date, default: Date.now },
+  result: { type: String, default: 'pending' },
+  wonAmount: { type: Number },
+
 });
 
 const Bet = mongoose.model('Bet', betSchema);
