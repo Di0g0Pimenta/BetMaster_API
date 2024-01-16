@@ -1,296 +1,72 @@
-# Documentação da API BetMaster
 
-Bem-vindo à documentação da API BetMaster. Esta API fornece funcionalidades para um sistema de apostas online.
+# Estrutura do Projeto
 
-## Autenticação
 
-A autenticação nesta API é realizada por meio de JSON Web Tokens (JWT). Para obter um token de acesso, faça uma solicitação para o endpoint `/api/auth/login` com as credenciais do usuário. O token deve ser incluído no cabeçalho `Authorization` para acessar recursos protegidos.
+- 'authmiddleware.js': Middleware para autenticação JWT.
+- 'models/': Modelos mongoose para User, Game, Odd, Bet e BettingHistory.
+- ?routes/':
+    - 'auth.js': Rotas para registro e login de utilizadores.
+    - 'bets.js': Rotas relacionadas a apostas.
+    - 'games.js': Rotas para operações CRUD em jogos.
+    - 'odds.js': Rotas para manipulação de odds.
+    - 'users.js': Rotas para informações de perfil do utilizadro.
+    - 'server.js': Configuração do servidor Express e inicialização.
 
-### Registro de Usuário
-
-**Endpoint:** `/api/auth/register`
-
-**Método:** `POST`
-
-Registra um novo usuário na plataforma.
-
-#### Parâmetros da Solicitação
-
-- `username` (string): Nome de usuário do novo usuário.
-- `password` (string): Senha do novo usuário.
-
-#### Resposta de Sucesso
-
-Status: 201 Created
-
+# Uso
+## Autenticação:
+Para registrar um novo usuário, faça uma requisição POST para /api/auth/register.
+Para fazer login, faça uma requisição POST para /api/auth/login. O token JWT será retornado.
 ```json
 {
-  "message": "Usuário registrado com sucesso."
+  "username": "example_user",
+  "email": "user@example.com",
+  "password": "password123"
 }
 ```
-### Login de Usuário
-
-**Endpoint:** `/api/auth/login`
-
-**Método:** `POST`
-
-Realiza o login de um usuário existente e retorna um token JWT.
-
-#### Parâmetros da Solicitação
-- `username` (string): Nome de usuário do usuário existente.
-- `password` (string): Senha do usuário existente.
-
-##### Resposta de Sucesso
-- **Status:** 200 OK
-
 ```json
 {
-  "token": "seu-token-jwt-aqui"
+  "username": "example_user",
+  "password": "password123"
 }
 
 ```
-
-### Usuários - Perfil do Usuário
-
-**Endpoint:** `/api/users/profile`
-
-**Método:** `GET`
-
-Obtém o perfil do usuário autenticado.
-
-#### Parâmetros da Solicitação
-Nenhum.
-
-#### Resposta de Sucesso
-- **Status:** 200 OK
-
+## Apostas:
+Para criar uma nova aposta, faça uma requisição POST para /api/bets com as informações necessárias.
+Para obter a lista de apostas de um usuário, faça uma requisição GET para /api/bets.
 ```json
 {
-  "username": "nome-de-usuario",
+  "gameId": "5f9a28b986e3a47d91f61a1c",
+  "oddId": "5f9a28b986e3a47d91f61a1d",
+  "betAmount": 50,
+  "betType": "teamA"
 }
 ```
-### Jogos - Lista de Jogos
-
-**Endpoint:** `/api/games`
-
-**Método:** `GET`
-
-Obtém a lista de todos os jogos disponíveis.
-
-#### Parâmetros da Solicitação
-Nenhum.
-
-#### Resposta de Sucesso
-- **Status:** 200 OK
-
-```json
-[
-  {
-    "name": "Nome do Jogo",
-    "dateTime": "Data e hora do jogo",
-    "teamA": "Nome do Time A",
-    "teamB": "Nome do Time B"
-  },
-]
-```
-
-**Método:** `Post`
-
-Cria um jogos.
-
-#### Parâmetros da Solicitação
-- `name` (string): Nome do jogo.
-- `dateTime` (date): Data e hora do jogo.
-- `teamA` (string): Nome da primeira equipa.
-- `teamB` (string): Nome da segunda equipa.
-
-#### Resposta de Sucesso
-- **Status:** 200 OK
-
-```json
-[
-  {
-    "name": "Nome do Jogo",
-    "dateTime": "Data e hora do jogo",
-    "teamA": "Nome do Time A",
-    "teamB": "Nome do Time B"
-  },
-]
-```
-
-**Método:** `Put`
-
-Atualiza os dados de un jogo um jogos.
-
-#### Parâmetros da Solicitação
-- `name` (string): Nome do jogo.
-- `dateTime` (date): Data e hora do jogo.
-- `teamA` (string): Nome da primeira equipa.
-- `teamB` (string): Nome da segunda equipa.
-
-#### Resposta de Sucesso
-- **Status:** 200 OK
-
-```json
-[
-  {
-    "name": "Nome do Jogo",
-    "dateTime": "Data e hora do jogo",
-    "teamA": "Nome do Time A",
-    "teamB": "Nome do Time B"
-  },
-]
-```
-
-**Método:** `Delete`
-
-Elimina um jogo da lista de jogos.
-
-#### Parâmetros da Solicitação
-- `name` (string): Nome do jogo.
-- `dateTime` (date): Data e hora do jogo.
-- `teamA` (string): Nome da primeira equipa.
-- `teamB` (string): Nome da segunda equipa.
-
-#### Resposta de Sucesso
-- **Status:** 200 OK
-
-```json
-[
-  {
-    "name": "Nome do Jogo",
-    "dateTime": "Data e hora do jogo",
-    "teamA": "Nome do Time A",
-    "teamB": "Nome do Time B"
-  },
-]
-```
-
-### Odds - Lista de Odds
-
-**Endpoint:** `/api/odds`
-
-**Método:** `GET`
-
-Obtém a lista de todas as odds disponíveis.
-
-#### Parâmetros da Solicitação
-
-- `gameId` (string): ID do jogo.
-- `teamAOdd` (int): Odd da equipa A.
-- `teamBOdd` (int): Odd da equipa B.
-- `drawOdd` (int): Odd empate.
-
-#### Resposta de Sucesso
-- **Status:** 200 OK
-
-```json
-[
-  {
-    "gameId": "ID do Jogo",
-    "teamAOdd": 2.5,
-    "teamBOdd": 1.8,
-    "drawOdd": 3.0
-  },
-]
-```
-
-**Método:** `POST`
-
-Obtém a lista de todas as odds disponíveis.
-
-#### Parâmetros da Solicitação
-
-- `gameId` (string): ID do jogo.
-- `teamAOdd` (int): Odd da equipa A.
-- `teamBOdd` (int): Odd da equipa B.
-- `drawOdd` (int): Odd empate.
-
-#### Resposta de Sucesso
-- **Status:** 200 OK
-
-```json
-[
-  {
-    "gameId": "ID do Jogo",
-    "teamAOdd": 2.5,
-    "teamBOdd": 1.8,
-    "drawOdd": 3.0
-  },
-]
-```
-
-### Apostas - Criar uma Nova Aposta
-
-**Endpoint:** `/api/bets`
-
-**Método:** `POST`
-
-Cria uma nova aposta para o usuário autenticado.
-
-#### Parâmetros da Solicitação
-- `gameId` (string): ID do jogo para o qual a aposta está sendo feita.
-- `oddId` (string): ID da odd escolhida para a aposta.
-- `betAmount` (number): Valor da aposta.
-- `betType` (string): Tipo da aposta ('teamA', 'teamB', 'draw').
-
-#### Resposta de Sucesso
-- **Status:** 201 Created
-
+## Jogos:
+Para obter a lista de jogos, faça uma requisição GET para /api/games.
+Para adicionar um novo jogo, faça uma requisição POST para /api/games.
 ```json
 {
-  "message": "Aposta criada com sucesso."
+  "name": "Partida de Futebol",
+  "dateTime": "2024-01-23T18:30:00Z",
+  "teamA": "Time A",
+  "teamB": "Time B"
 }
 ```
-
-### Histórico de Apostas - Lista de Histórico de Apostas
-
-**Endpoint:** `/api/bettingHistory`
-
-**Método:** `GET`
-
-Obtém o histórico de apostas para o usuário autenticado.
-
-#### Parâmetros da Solicitação
-
-Nenhum.
-
-#### Resposta de Sucesso
-
-**Status:** `200 OK`
-
-```json
-[
-  {
-    "betId": "ID da Aposta",
-    "result": "won",
-    "wonAmount": 50.0,
-    "dateTime": "Data e hora do Histórico"
-  },
-]
-```
-
-### Detalhes do Histórico de Aposta
-
-**Endpoint:** `/api/bettingHistory/:historyId`
-
-**Método:** `GET`
-
-Obtém os detalhes de um histórico de aposta específico.
-
-#### Parâmetros da Solicitação
-
-- `historyId` (string): ID do histórico de aposta.
-
-#### Resposta de Sucesso
-
-**Status:** `200 OK`
-
 ```json
 {
-  "betId": "ID da Aposta",
-  "result": "won",
-  "wonAmount": 50.0,
-  "dateTime": "Data e hora do Histórico"
+  "result": "teamA"
 }
 ```
+## Odds:
+Para obter a lista de odds, faça uma requisição GET para /api/odds.
+Para adicionar uma nova odd, faça uma requisição POST para /api/odds.
+```json
+{
+  "gameId": "5f9a28b986e3a47d91f61a1c",
+  "teamAOdd": 1.5,
+  "teamBOdd": 2.0,
+  "drawOdd": 3.0
+}
+```
+## Perfil do Usuário:
+Para obter o perfil do usuário autenticado, faça uma requisição GET para /api/users/profile.
