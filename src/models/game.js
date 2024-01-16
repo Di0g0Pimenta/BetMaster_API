@@ -5,6 +5,7 @@ const gameSchema = new mongoose.Schema({
   dateTime: { type: Date, required: true },
   teamA: { type: String, required: true },
   teamB: { type: String, required: true },
+  ended: { type: Boolean, default: false },
 });
 
 const Game = mongoose.model('Game', gameSchema);

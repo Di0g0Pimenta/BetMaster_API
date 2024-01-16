@@ -10,7 +10,7 @@ const betSchema = new mongoose.Schema({
   dateTime: { type: Date, default: Date.now },
   result: { type: String, default: 'pending' },
   wonAmount: { type: Number },
-
+  historyId: { type: mongoose.Schema.Types.ObjectId, ref: 'BettingHistory' },
 });
 
 const Bet = mongoose.model('Bet', betSchema);
