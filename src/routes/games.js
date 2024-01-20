@@ -1,4 +1,3 @@
-// games.js (route)
 const express = require("express");
 const router = express.Router();
 const Game = require("../models/game");
@@ -14,8 +13,14 @@ router.get("/", async (req, res) => {
       gameId: game._id.toString(),
       name: game.name,
       dateTime: game.dateTime,
-      teamA: game.teamA,
-      teamB: game.teamB,
+      teamA: {
+        name: game.teamA.name,
+        logoUrl: game.teamA.logoUrl
+      },
+      teamB: {
+        name: game.teamB.name,
+        logoUrl: game.teamB.logoUrl
+      },
       ended: game.ended,
     }));
 
