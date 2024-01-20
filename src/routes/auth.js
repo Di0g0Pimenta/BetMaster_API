@@ -4,6 +4,31 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 
+router.post("/refresh-token", async (req, res) => {
+  try {
+    const refreshToken = req.header('Authorization');
+
+    if (!refreshToken) {
+      return res.status(401).json({ error: "Token de atualização ausente." });
+    }
+
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+      if (err) {
+        return res.status(403).json({ error: "Token de atualização inválido." });
+      }
+
+      const accessToken = jwt.sign({ userId: user.userId }, process.env.JWT_SECRET, {
+        expiresIn: "1h", 
+      });
+
+      res.json({ accessToken });
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erro ao renovar o token." });
+  }
+});
+
 router.post("/register", async (req, res) => {
   try {
     const { username, email, password } = req.body;
