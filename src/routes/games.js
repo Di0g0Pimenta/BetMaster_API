@@ -3,16 +3,22 @@ const router = express.Router();
 const Game = require("../models/game");
 const Bet = require("../models/bet");
 const Odd = require("../models/odd");
-const BettingHistory = require("../models/bettingHistory"); // Importe o modelo BettingHistory
+const BettingHistory = require("../models/bettingHistory");
+const League = require("../models/league");
 
 router.get("/", async (req, res) => {
   try {
-    const games = await Game.find({}, "_id name dateTime teamA teamB ended");
+    const games = await Game.find({}, "_id name dateTime league teamA teamB ended")
+      .populate('league', 'name');
 
     const formattedGames = games.map((game) => ({
       gameId: game._id.toString(),
       name: game.name,
       dateTime: game.dateTime,
+      league: {
+        leagueId: game.league._id.toString(),
+        name: game.league.name
+      },
       teamA: {
         name: game.teamA.name,
         logoUrl: game.teamA.logoUrl
@@ -33,8 +39,14 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const { name, dateTime, teamA, teamB } = req.body;
-    const newGame = new Game({ name, dateTime, teamA, teamB });
+    const { name, dateTime, leagueId, teamA, teamB } = req.body;
+
+    const leagueExists = await League.findById(leagueId);
+    if (!leagueExists) {
+      return res.status(404).json({ error: 'Liga não encontrada.' });
+    }
+
+    const newGame = new Game({ name, dateTime, league: leagueId, teamA, teamB });
     await newGame.save();
     res.status(201).json({ message: "Jogo adicionado com sucesso." });
   } catch (error) {
@@ -73,19 +85,16 @@ router.put("/:id/result", async (req, res) => {
       return res.status(404).json({ error: "Jogo não encontrado." });
     }
 
-    // Verifica se o jogo já acabou
     if (game.ended) {
       return res.status(400).json({ error: "Este jogo já foi concluído." });
     }
 
-    // Atualiza o resultado e marca o jogo como concluído
     const updatedGame = await Game.findByIdAndUpdate(
       gameId,
       { result, ended: true },
       { new: true }
     );
 
-    // Lógica para calcular ganhos e atualizar apostas
     const bets = await Bet.find({ gameId });
     for (const bet of bets) {
       const odd = await Odd.findById(bet.oddId);
@@ -103,10 +112,8 @@ router.put("/:id/result", async (req, res) => {
         historyResult = "won";
       }
 
-      // Atualiza o campo wonAmount da aposta
       await Bet.findByIdAndUpdate(bet._id, { wonAmount, result });
 
-      // Salva no histórico
       const historyEntry = new BettingHistory({
         userId: bet.userId,
         gameId: gameId,
