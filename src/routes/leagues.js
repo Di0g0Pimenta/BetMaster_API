@@ -4,21 +4,34 @@ const League = require("../models/league");
 
 router.post("/", async (req, res) => {
   try {
-    const { name, game } = req.body;
+    console.log("Dados recebidos na rota de criação de ligas:", req.body);
 
-    const leagueExists = await League.findOne({ name, game });
-    if (leagueExists) {
-      return res.status(400).json({ error: 'Liga já existente.' });
+    // Verifique se 'leagues' está presente no corpo da solicitação
+    if (!req.body.leagues || !Array.isArray(req.body.leagues)) {
+      return res.status(400).json({ error: "'leagues' é um campo obrigatório e deve ser um array" });
     }
 
-    const newLeague = new League({ name, game });
+    // Processar as ligas
+    const leaguesData = req.body.leagues;
 
-    await newLeague.save();
+    // Itere sobre os dados e crie instâncias de Liga
+    for (let i = 0; i < leaguesData.length; i++) {
+      const { name, game } = leaguesData[i];
 
-    res.status(201).json({ message: 'Liga criada com sucesso.' });
+      const leagueExists = await League.findOne({ name, game });
+      if (leagueExists) {
+        return res.status(400).json({ error: `Liga '${name}' para o jogo '${game}' já existente.` });
+      }
+
+      const newLeague = new League({ name, game });
+
+      await newLeague.save();
+    }
+
+    res.status(201).json({ message: 'Ligas criadas com sucesso.' });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Erro ao criar a liga.' });
+    res.status(500).json({ error: 'Erro ao criar as ligas.' });
   }
 });
 
