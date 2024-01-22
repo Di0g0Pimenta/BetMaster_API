@@ -8,7 +8,7 @@ const League = require("../models/league");
 
 router.get("/", async (req, res) => {
   try {
-    const games = await Game.find({}, "_id name dateTime league teamA teamB ended")
+    const games = await Game.find({}, '_id name dateTime league teamA teamB ended')
       .populate('league', 'name');
 
     const formattedGames = games.map((game) => ({
@@ -41,6 +41,7 @@ router.post("/", async (req, res) => {
   try {
     const { name, dateTime, leagueId, teamA, teamB } = req.body;
 
+    // Verifica se a liga existe
     const leagueExists = await League.findById(leagueId);
     if (!leagueExists) {
       return res.status(404).json({ error: 'Liga não encontrada.' });
@@ -48,6 +49,7 @@ router.post("/", async (req, res) => {
 
     const newGame = new Game({ name, dateTime, league: leagueId, teamA, teamB });
     await newGame.save();
+
     res.status(201).json({ message: "Jogo adicionado com sucesso." });
   } catch (error) {
     console.error(error);
