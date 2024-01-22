@@ -4,7 +4,10 @@ const Game = require("../models/game");
 const Bet = require("../models/bet");
 const Odd = require("../models/odd");
 const BettingHistory = require("../models/bettingHistory");
-const League = require("../models/league");
+const League = require("../models/league"); // Importe o modelo League
+const leaguesRouter = require("./leagues"); // Importe o arquivo de rotas para ligas
+
+router.use("/leagues", leaguesRouter);
 
 router.get("/", async (req, res) => {
   try {
