@@ -2,19 +2,28 @@ const express = require("express");
 const router = express.Router();
 const League = require("../models/league");
 
+router.get("/:game", async (req, res) => {
+  try {
+    const game = req.params.game.toUpperCase();
+    const leagues = await League.find({ game });
+
+    res.status(200).json(leagues);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erro ao obter a lista de ligas." });
+  }
+});
+
 router.post("/", async (req, res) => {
   try {
     console.log("Dados recebidos na rota de criação de ligas:", req.body);
 
-    // Verifique se 'leagues' está presente no corpo da solicitação
     if (!req.body.leagues || !Array.isArray(req.body.leagues)) {
       return res.status(400).json({ error: "'leagues' é um campo obrigatório e deve ser um array" });
     }
 
-    // Processar as ligas
     const leaguesData = req.body.leagues;
 
-    // Itere sobre os dados e crie instâncias de Liga
     for (let i = 0; i < leaguesData.length; i++) {
       const { name, game } = leaguesData[i];
 

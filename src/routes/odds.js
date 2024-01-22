@@ -24,18 +24,15 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Rota para criar uma nova odd
 router.post('/', async (req, res) => {
   try {
     const { gameId, teamAOdd, teamBOdd, drawOdd } = req.body;
 
-    // Verifica se o jogo existe
     const gameExists = await Game.findById(gameId);
     if (!gameExists) {
       return res.status(404).json({ error: 'Jogo não encontrado.' });
     }
 
-    // Cria uma nova instância do modelo Odd
     const newOdd = new Odd({
       gameId,
       teamAOdd,
@@ -43,7 +40,6 @@ router.post('/', async (req, res) => {
       drawOdd,
     });
 
-    // Salva a nova odd no banco de dados
     await newOdd.save();
 
     res.status(201).json({ message: 'Odd criada com sucesso.' });
@@ -58,11 +54,10 @@ router.put('/:id', async (req, res) => {
     const oddId = req.params.id;
     const { teamAOdd, teamBOdd, drawOdd } = req.body;
 
-    // Atualiza a odd no banco de dados
     const updatedOdd = await Odd.findByIdAndUpdate(
       oddId,
       { teamAOdd, teamBOdd, drawOdd },
-      { new: true } // Retorna a odd atualizada
+      { new: true }
     );
 
     if (!updatedOdd) {

@@ -134,7 +134,6 @@ router.post("/", async (req, res) => {
 
     await newBet.save();
 
-    // Recarrega o objeto newBet para obter a versão atualizada do documento
     const newBetAfterSave = await Bet.findById(newBet._id);
 
     console.log("Objeto da Nova Aposta após salvar:", newBetAfterSave);
@@ -182,7 +181,6 @@ router.put("/:id/result", async (req, res) => {
       return res.status(404).json({ error: "Aposta não encontrada." });
     }
 
-    // Lógica para calcular o valor ganho (wonAmount) com base na odd e no resultado
     const odd = await Odd.findById(bet.oddId);
 
     if (!odd) {
@@ -201,10 +199,8 @@ router.put("/:id/result", async (req, res) => {
       }
     }
 
-    // Atualiza o campo wonAmount da aposta
     await Bet.findByIdAndUpdate(betId, { wonAmount });
 
-    // Atualiza o saldo do usuário com base nos ganhos ou perdas
     const user = await User.findById(bet.userId);
     const updatedBalance = user.balance + wonAmount - bet.betAmount;
     await User.findByIdAndUpdate(bet.userId, { balance: updatedBalance });

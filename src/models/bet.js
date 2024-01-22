@@ -5,8 +5,8 @@ const betSchema = new mongoose.Schema({
   gameId: { type: mongoose.Schema.Types.ObjectId, ref: 'Game', required: true },
   oddId: { type: mongoose.Schema.Types.ObjectId, ref: 'Odd', required: true },
   betAmount: { type: Number, required: true },
-  betType: { type: String, required: true }, // 'teamA', 'teamB', 'draw'
-  status: { type: String, required: true }, // 'pending', 'won', 'lost'
+  betType: { type: String, required: true },
+  status: { type: String, required: true },
   dateTime: { type: Date, default: Date.now },
   result: { type: String, default: 'pending' },
   wonAmount: { type: Number },

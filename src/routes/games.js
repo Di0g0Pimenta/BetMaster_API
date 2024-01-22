@@ -4,8 +4,8 @@ const Game = require("../models/game");
 const Bet = require("../models/bet");
 const Odd = require("../models/odd");
 const BettingHistory = require("../models/bettingHistory");
-const League = require("../models/league"); // Importe o modelo League
-const leaguesRouter = require("./leagues"); // Importe o arquivo de rotas para ligas
+const League = require("../models/league");
+const leaguesRouter = require("./leagues");
 
 router.use("/leagues", leaguesRouter);
 
@@ -44,7 +44,6 @@ router.post("/", async (req, res) => {
   try {
     const { name, dateTime, leagueId, teamA, teamB } = req.body;
 
-    // Verifica se a liga existe
     const leagueExists = await League.findById(leagueId);
     if (!leagueExists) {
       return res.status(404).json({ error: 'Liga não encontrada.' });

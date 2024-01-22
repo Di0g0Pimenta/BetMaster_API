@@ -16,10 +16,8 @@ router.get("/profile", authenticateToken, async (req, res) => {
       return res.status(404).json({ error: "Usuário não encontrado." });
     }
 
-    // Obter histórico de apostas do usuário
     const bettingHistory = await BettingHistory.find({ userId });
 
-    // Retorna todas as informações do usuário
     res.status(200).json({
       userId: user._id,
       username: user.username,
