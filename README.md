@@ -1,16 +1,29 @@
 
-# Estrutura do Projeto
+# Decumentação da API
 
 
-- 'authmiddleware.js': Middleware para autenticação JWT.
+- 'authmiddleware.js': Middleware para autenticação de token usando JSON Web Token (JWT).
 - 'models/': Modelos mongoose para User, Game, Odd, Bet e BettingHistory.
-- ?routes/':
-    - 'auth.js': Rotas para registro e login de utilizadores.
-    - 'bets.js': Rotas relacionadas a apostas.
-    - 'games.js': Rotas para operações CRUD em jogos.
-    - 'odds.js': Rotas para manipulação de odds.
-    - 'users.js': Rotas para informações de perfil do utilizadro.
-    - 'server.js': Configuração do servidor Express e inicialização.
+- bet.js (model): Define o modelo (schema) para as apostas.
+- bettingsHistory.js (model): Define o modelo para o histórico de apostas.
+- game.js (model): Define o modelo para os jogos.
+- league.js (model): Define o modelo para as ligas.
+- odd.js (model): Define o modelo para as odds.
+- user.js (model): Define o modelo para os usuários.
+- auth.js (route): Define rotas para autenticação, registro e renovação de token.
+
+- routes:
+    - 'bets.js' (route): Define rotas relacionadas a apostas, incluindo criação, obtenção e atualização de resultados.
+
+    - 'games.js' (route): Define rotas relacionadas a jogos, incluindo criação, obtenção, atualização de resultados e remoção.
+
+    - 'leagues.js' (route): Define rotas para manipulação de ligas, incluindo criação.
+
+    - 'odds.js' (route): Define rotas para obtenção, criação e atualização de odds.
+
+    -'users.js' (route): Define rotas relacionadas a usuários, incluindo obtenção de perfil.
+
+-server.js: Configuração principal do servidor Express, conexão com o banco de dados e configuração de rotas.
 
 # Uso
 ## Autenticação:
